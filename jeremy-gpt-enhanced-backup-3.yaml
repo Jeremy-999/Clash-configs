@@ -1,0 +1,46 @@
+
+proxies:
+  - name: Jeremy-VLESS_WS
+    type: vless
+    server: beautyyouth.com.cn
+    port: 443
+    uuid: 23918af0-9b4c-4a8b-925f-3841c79d4d43
+    tls: true
+    cipher: none
+    network: ws
+    ws-opts:
+      path: /myvlessws
+      headers:
+        Host: beautyyouth.com.cn
+    servername: beautyyouth.com.cn
+    udp: true
+    client-fingerprint: chrome
+
+proxy-groups:
+  - name: "🚀 节点选择"
+    type: select
+    proxies:
+      - Jeremy-VLESS_WS
+      - DIRECT
+
+  - name: "ChatGPT"
+    type: select
+    proxies:
+      - Jeremy-VLESS_WS
+      - DIRECT
+
+  - name: "国内软件"
+    type: select
+    proxies:
+      - DIRECT
+      - Jeremy-VLESS_WS
+
+rules:
+  - DOMAIN-SUFFIX,openai.com,ChatGPT
+  - DOMAIN-SUFFIX,chat.openai.com,ChatGPT
+  - DOMAIN-KEYWORD,openai,ChatGPT
+  - DOMAIN-SUFFIX,wechat.com,国内软件
+  - DOMAIN-SUFFIX,douyin.com,国内软件
+  - DOMAIN-SUFFIX,qq.com,国内软件
+  - GEOIP,CN,国内软件
+  - MATCH,🚀 节点选择
