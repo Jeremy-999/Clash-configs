@@ -1,0 +1,92 @@
+mixed-port: 7890
+allow-lan: true
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+
+dns:
+  enable: true
+  nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  fallback:
+    - 8.8.8.8
+    - 1.1.1.1
+  default-nameserver:
+    - 223.5.5.5
+  enhanced-mode: fake-ip
+
+proxies:
+  - name: Jeremy-VLESS_WS
+    type: vless
+    server: beautyyouth.com.cn
+    port: 443
+    uuid: 23918af0-9b4c-4a8b-925f-3841c79d4d43
+    tls: true
+    cipher: none
+    network: ws
+    ws-opts:
+      path: /myvlessws
+      headers:
+        Host: beautyyouth.com.cn
+    servername: beautyyouth.com.cn
+    udp: true
+    client-fingerprint: chrome
+
+proxy-groups:
+  - name: "🚀 节点选择"
+    type: select
+    proxies:
+      - Jeremy-VLESS_WS
+      - DIRECT
+
+  - name: "🌍 国外网站"
+    type: select
+    proxies:
+      - "🚀 节点选择"
+      - DIRECT
+
+rules:
+  # OpenAI / ChatGPT
+  - DOMAIN-SUFFIX,openai.com,🌍 国外网站
+  - DOMAIN-SUFFIX,chat.openai.com,🌍 国外网站
+  - DOMAIN-KEYWORD,openai,🌍 国外网站
+  - DOMAIN-SUFFIX,oaistatic.com,🌍 国外网站
+  - DOMAIN-SUFFIX,oaiusercontent.com,🌍 国外网站
+  - DOMAIN-SUFFIX,auth0.com,🌍 国外网站
+  - DOMAIN-SUFFIX,sentry.io,🌍 国外网站
+
+  # TikTok
+  - DOMAIN-SUFFIX,tiktokv.com,🌍 国外网站
+  - DOMAIN-SUFFIX,tiktokcdn.com,🌍 国外网站
+  - DOMAIN-KEYWORD,tiktok,🌍 国外网站
+
+  # YouTube
+  - DOMAIN-KEYWORD,youtube,🌍 国外网站
+  - DOMAIN-SUFFIX,googlevideo.com,🌍 国外网站
+
+  # Instagram
+  - DOMAIN-KEYWORD,instagram,🌍 国外网站
+  - DOMAIN-SUFFIX,cdninstagram.com,🌍 国外网站
+
+  # Telegram
+  - DOMAIN-SUFFIX,t.me,🌍 国外网站
+  - DOMAIN-SUFFIX,telegram.org,🌍 国外网站
+
+  # 微信 / 抖音 / 国内
+  - DOMAIN-SUFFIX,wechat.com,DIRECT
+  - DOMAIN-SUFFIX,wechat.com.cn,DIRECT
+  - DOMAIN-SUFFIX,wx.qq.com,DIRECT
+  - DOMAIN-SUFFIX,qq.com,DIRECT
+  - DOMAIN-SUFFIX,qpic.cn,DIRECT
+  - DOMAIN-SUFFIX,gtimg.cn,DIRECT
+  - DOMAIN-SUFFIX,weiyun.com,DIRECT
+  - DOMAIN-KEYWORD,qqmail,DIRECT
+  - DOMAIN-SUFFIX,douyin.com,DIRECT
+  - DOMAIN-SUFFIX,amemv.com,DIRECT
+  - DOMAIN-SUFFIX,pstatp.com,DIRECT
+  - DOMAIN-SUFFIX,bytecdn.cn,DIRECT
+
+  # 国内常用直连
+  - GEOIP,CN,DIRECT
+  - MATCH,🌍 国外网站
